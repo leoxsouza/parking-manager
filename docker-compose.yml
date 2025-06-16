@@ -14,6 +14,10 @@ services:
       - pgdata:/var/lib/postgresql/data
     networks:
       - parking-net
+  garage-sim:
+    image: cfontes0estapar/garage-sim:1.0.0
+    ports:
+      - "3000:3000"
 
 volumes:
   pgdata:
