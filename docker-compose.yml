@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: parking-db
+    environment:
+      POSTGRES_DB: parking
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - parking-net
+
+volumes:
+  pgdata:
+
+networks:
+  parking-net:
+    driver: bridge
