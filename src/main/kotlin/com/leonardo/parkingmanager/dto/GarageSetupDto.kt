@@ -9,7 +9,7 @@ data class GarageSetupDto(
     data class SectorDto(
         @JsonProperty("sector")
         val sector: String,
-        @JsonProperty("basePrice")
+        @JsonProperty("base_price")
         val basePrice: Double,
         @JsonProperty("max_capacity")
         val maxCapacity: Int,
