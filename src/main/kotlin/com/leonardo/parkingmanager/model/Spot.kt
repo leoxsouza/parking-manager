@@ -1,20 +1,15 @@
 package com.leonardo.parkingmanager.model
 
-import jakarta.persistence.Entity
-import jakarta.persistence.FetchType
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
+import org.springframework.data.annotation.Id
+import org.springframework.data.relational.core.mapping.Column
+import org.springframework.data.relational.core.mapping.Table
 
-@Entity
+@Table("spot")
 data class Spot(
     @Id
-    val id: Long = 0,
-
-    val lat: Double = 0.0,
-    val lng: Double = 0.0,
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "sector_name")
-    val sector: Sector = Sector(),
+    val id: Long?,
+    val lat: Double,
+    val lng: Double,
+    @Column("sector_name")
+    val sectorName: String
 )

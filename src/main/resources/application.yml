@@ -1,15 +1,16 @@
 spring:
-  datasource:
-    url: jdbc:postgresql://localhost:5432/parking
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432/parking
     username: postgres
     password: postgres
-  jpa:
-    hibernate:
-      ddl-auto: create
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:schema.sql
 
 server:
   port: 3003
+
+#logging:
+#  level:
+#    root: DEBUG

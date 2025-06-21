@@ -1,20 +1,30 @@
 package com.leonardo.parkingmanager.model
 
-import jakarta.persistence.*
+import org.springframework.data.annotation.Id
+import org.springframework.data.relational.core.mapping.Column
+import org.springframework.data.relational.core.mapping.Table
 import java.time.LocalTime
 
-@Entity
+@Table("sector")
 data class Sector (
     @Id
-    val name: String = "",
+    val id: Long?,
 
-    val basePrice: Double = 0.0,
+    @Column("name")
+    val name: String,
 
-    val maxCapacity: Int = 0,
+    @Column("base_price")
+    val basePrice: Double,
 
-    val openHour: LocalTime = LocalTime.of(0, 0),
+    @Column("max_capacity")
+    val maxCapacity: Int,
 
-    val closeHour: LocalTime? = null,
+    @Column("open_hour")
+    val openHour: LocalTime,
 
-    val durationLimitMinutes: Int = 0,
+    @Column("close_hour")
+    val closeHour: LocalTime,
+
+    @Column("duration_limit_minutes")
+    val durationLimitMinutes: Int,
 )

@@ -4,10 +4,12 @@ import com.leonardo.parkingmanager.dto.GarageSetupDto
 import com.leonardo.parkingmanager.dto.mapper.GarageMapper
 import com.leonardo.parkingmanager.repository.SectorRepository
 import com.leonardo.parkingmanager.repository.SpotRepository
+import kotlinx.coroutines.flow.toList
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
-import org.springframework.web.client.RestTemplate
+import org.springframework.web.reactive.function.client.WebClient
+import org.springframework.web.reactive.function.client.awaitBody
 
 @Service
 class GarageSetupService(
@@ -15,22 +17,31 @@ class GarageSetupService(
     private val garageApiUrl: String,
     private val mapper: GarageMapper,
     private val sectorRepository: SectorRepository,
-    private val spotRepository: SpotRepository
+    private val spotRepository: SpotRepository,
 ) {
-    private val restTemplate = RestTemplate()
+    private val webClient = WebClient.builder().build()
+    private val logger = LoggerFactory.getLogger(GarageSetupService::class.java)
 
-    @Transactional
-    fun fetchAndPersistGarage() {
-        val dto = restTemplate.getForObject(garageApiUrl, GarageSetupDto::class.java) ?: return
+    suspend fun fetchAndPersistGarage() {
+        val dto = try {
+            webClient.get()
+                .uri(garageApiUrl)
+                .retrieve()
+                .awaitBody<GarageSetupDto>()
+        } catch (e: Exception) {
+            logger.error("Error fetching garage setup from API: ${e.message}", e)
+            return
+        }
 
         val sectors = dto.garage.map { mapper.toSector(it) }
-        sectorRepository.saveAll(sectors)
+        val savedSectors = sectorRepository.saveAll(sectors).toList()
 
-        val sectorMap = sectors.associateBy { it.name }
+        val sectorMap = savedSectors.associateBy { it.name }
         val spots = dto.spots.map {
             val sector = sectorMap[it.sector] ?: error("Sector not found: ${it.sector}")
             mapper.toSpot(it, sector)
         }
-        spotRepository.saveAll(spots)
+
+        spotRepository.saveAll(spots).toList()
     }
 }

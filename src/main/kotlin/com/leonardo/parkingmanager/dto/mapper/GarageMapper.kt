@@ -15,17 +15,18 @@ class GarageMapper {
             basePrice = dto.basePrice,
             maxCapacity = dto.maxCapacity,
             openHour = dto.openHour?.let { LocalTime.parse(it) } ?: LocalTime.of(0, 0),
-            closeHour = dto.closeHour?.let { LocalTime.parse(it) },
+            closeHour = dto.closeHour?.let { LocalTime.parse(it) } ?: LocalTime.of(0, 0),
             durationLimitMinutes = dto.durationLimitMinutes,
+            id = null
         )
     }
 
     fun toSpot(dto: GarageSetupDto.SpotDto, sector: Sector): Spot {
         return Spot(
-            id = dto.id,
+            id = null,
             lat = dto.lat,
             lng = dto.lng,
-            sector = sector
+            sectorName = sector.name,
         )
     }
 

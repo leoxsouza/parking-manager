@@ -1,12 +1,13 @@
 package com.leonardo.parkingmanager.model
 
-import jakarta.persistence.*
+import org.springframework.data.annotation.Id
+import org.springframework.data.relational.core.mapping.Table
 import java.time.LocalDate
 import java.time.OffsetDateTime
 
-@Entity
+@Table("revenue")
 data class Revenue(
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
     val id: Long = 0,
 
     val sector: String = "",

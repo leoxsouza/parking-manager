@@ -1,28 +1,25 @@
 package com.leonardo.parkingmanager.model
 
-import jakarta.persistence.*
-import java.time.OffsetDateTime
+import org.springframework.data.annotation.Id
+import org.springframework.data.relational.core.mapping.Table
+import java.time.Instant
 
-@Entity
+@Table("parking_session")
 data class ParkingSession(
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
     val id: Long = 0,
 
     val licensePlate: String = "",
 
-    val entryTime: OffsetDateTime = OffsetDateTime.now(),
+    val entryTime: Instant? = null,
 
-    var parkedTime: OffsetDateTime? = null,
+    var parkedTime: Instant? = null,
 
-    var exitTime: OffsetDateTime? = null,
+    var exitTime: Instant? = null,
 
     var spotLat: Double? = null,
 
     var spotLng: Double? = null,
 
     var price: Double? = null,
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "sector_name")
-    val sector: Sector = Sector(),
 )
