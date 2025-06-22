@@ -34,6 +34,8 @@ class GarageSetupService(
         }
 
         val sectors = dto.garage.map { mapper.toSector(it) }
+
+        logger.info("Persisting ${sectors.size} sectors and ${dto.spots.size} spots")
         val savedSectors = sectorRepository.saveAll(sectors).toList()
 
         val sectorMap = savedSectors.associateBy { it.name }
@@ -42,6 +44,7 @@ class GarageSetupService(
             mapper.toSpot(it, sector)
         }
 
+        logger.info("Persisting ${spots.size} spots")
         spotRepository.saveAll(spots).toList()
     }
 }

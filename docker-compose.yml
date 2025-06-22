@@ -1,6 +1,25 @@
 version: '3.8'
 
 services:
+  app:
+      build:
+        context: .
+        dockerfile: Dockerfile
+      container_name: parking-app
+      depends_on:
+        - postgres
+      environment:
+        SPRING_R2DBC_URL: r2dbc:postgresql://postgres:5432/parking
+        SPRING_R2DBC_USERNAME: postgres
+        SPRING_R2DBC_PASSWORD: postgres
+        GARAGE_API_URL: http://localhost:3000/garage
+        SERVER_PORT: 3003
+      ports:
+        - "3003:3003"
+        - "3000:3000"
+      networks:
+        - parking-net
+
   postgres:
     image: postgres:15
     container_name: parking-db
@@ -14,10 +33,12 @@ services:
       - pgdata:/var/lib/postgresql/data
     networks:
       - parking-net
+
   garage-sim:
     image: cfontes0estapar/garage-sim:1.0.0
-    ports:
-      - "3000:3000"
+    network_mode: "service:app"
+    depends_on:
+      - app
 
 volumes:
   pgdata:

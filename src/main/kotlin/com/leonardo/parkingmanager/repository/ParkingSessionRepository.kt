@@ -5,6 +5,7 @@ import com.leonardo.parkingmanager.model.ParkingSession
 import org.springframework.data.r2dbc.repository.Query
 import org.springframework.data.repository.kotlin.CoroutineCrudRepository
 import org.springframework.stereotype.Repository
+import java.time.Instant
 
 @Repository
 interface ParkingSessionRepository : CoroutineCrudRepository<ParkingSession, Long> {
@@ -47,4 +48,19 @@ interface ParkingSessionRepository : CoroutineCrudRepository<ParkingSession, Lon
         LIMIT 1
     """)
     suspend fun findActiveByLatAndLng(lat: Double, lng: Double): ParkingSession?
+    
+    @Query("""
+        SELECT COALESCE(SUM(ps.price), 0.0) as total_revenue
+        FROM parking_session ps
+        JOIN spot s ON ps.spot_id = s.id
+        WHERE ps.exit_time >= :startDate
+        AND ps.exit_time <= :endDate
+        AND s.sector_name = :sector
+        AND ps.price IS NOT NULL
+    """)
+    suspend fun calculateTotalRevenueBySectorAndDateRange(
+        startDate: Instant,
+        endDate: Instant,
+        sector: String
+    ): Double
 }

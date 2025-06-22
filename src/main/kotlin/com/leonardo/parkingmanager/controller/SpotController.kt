@@ -4,11 +4,11 @@ import com.leonardo.parkingmanager.dto.SpotStatusRequestDto
 import com.leonardo.parkingmanager.dto.SpotStatusResponseDto
 import com.leonardo.parkingmanager.service.SpotService
 import org.springframework.http.ResponseEntity
-import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RestController
 
-@Controller
+@RestController
 class SpotController(
     val spotService: SpotService
 ) {

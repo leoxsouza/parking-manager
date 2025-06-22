@@ -2,6 +2,7 @@ package com.leonardo.parkingmanager.controller
 
 import com.leonardo.parkingmanager.dto.WebhookDto
 import com.leonardo.parkingmanager.service.WebhookService
+import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -10,11 +11,20 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/webhook")
-class WebhookController(private val webhookService: WebhookService) {
+class WebhookController(
+    private val webhookService: WebhookService
+) {
+    private val logger = LoggerFactory.getLogger(WebhookController::class.java)
 
     @PostMapping
-    suspend fun handleEvent(@RequestBody event: WebhookDto): ResponseEntity<Unit> {
-        webhookService.handleEvent(event)
-        return ResponseEntity.ok().build()
+    suspend fun handleEvent(@RequestBody webhookDto: WebhookDto): ResponseEntity<String> {
+        logger.info("Handling webhook event: $webhookDto")
+        try {
+            webhookService.handleEvent(webhookDto)
+            return ResponseEntity.ok("Webhook processed successfully")
+        } catch (e: Exception) {
+            logger.error("Error processing webhook request", e)
+            return ResponseEntity.badRequest().body("Error processing webhook request")
+        }
     }
 }

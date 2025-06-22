@@ -1,12 +1,16 @@
 spring:
   r2dbc:
-    url: r2dbc:postgresql://localhost:5432/parking
-    username: postgres
-    password: postgres
+    url: ${SPRING_R2DBC_URL:r2dbc:postgresql://localhost:5432/parking}
+    username: ${SPRING_R2DBC_USERNAME:postgres}
+    password: ${SPRING_R2DBC_PASSWORD:postgres}
   sql:
     init:
       mode: always
       schema-locations: classpath:schema.sql
+
+garage:
+  api:
+    url: ${GARAGE_API_URL:http://localhost:3000/garage}
 
 server:
   port: 3003
