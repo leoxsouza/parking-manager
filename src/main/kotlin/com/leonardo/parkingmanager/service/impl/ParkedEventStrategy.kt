@@ -2,12 +2,11 @@ package com.leonardo.parkingmanager.service.impl
 
 import com.leonardo.parkingmanager.dto.WebhookDto
 import com.leonardo.parkingmanager.dto.enums.EventType
+import com.leonardo.parkingmanager.exception.SpotAlreadyOccupiedException
 import com.leonardo.parkingmanager.model.ParkingSession
 import com.leonardo.parkingmanager.model.Sector
-import com.leonardo.parkingmanager.model.Spot
 import com.leonardo.parkingmanager.repository.ParkingSessionRepository
 import com.leonardo.parkingmanager.repository.SectorRepository
-import com.leonardo.parkingmanager.repository.SpotRepository
 import com.leonardo.parkingmanager.service.PricingService
 import com.leonardo.parkingmanager.service.SpotService
 import com.leonardo.parkingmanager.service.WebhookEventStrategy
@@ -39,10 +38,15 @@ class ParkedEventStrategy(
      */
     override suspend fun handleEvent(event: WebhookDto) {
         logger.info("Handling PARKED event for license plate ${event.licensePlate}")
-        
         validateEventData(event)
-        
+
         val spot = spotService.findSpot(event.latitude!!, event.longitude!!)
+
+        if (spot.occupied) {
+            logger.error("Spot ${spot.id} is already occupied")
+            throw SpotAlreadyOccupiedException("Spot ${spot.id} is already occupied")
+        }
+
         val sector = findSector(spot.sectorName)
         val session = findParkingSession(event.licensePlate)
         
@@ -50,6 +54,9 @@ class ParkedEventStrategy(
         val price = pricingService.calculateDynamicPrice(sector.basePrice, occupancy)
         
         updateParkingSession(session, spot.id!!, price)
+
+        spot.apply { this.occupied = true }
+        spotService.updateSpot(spot)
     }
     
     /**

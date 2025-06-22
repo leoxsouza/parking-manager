@@ -12,5 +12,5 @@ data class Spot(
     val lng: Double,
     @Column("sector_name")
     val sectorName: String,
-    val occupied: Boolean
+    var occupied: Boolean
 )

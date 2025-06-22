@@ -59,4 +59,8 @@ class SpotService(
         }
     }
 
+    suspend fun updateSpot(spot: Spot) {
+        spotRepository.save(spot)
+    }
+
 }

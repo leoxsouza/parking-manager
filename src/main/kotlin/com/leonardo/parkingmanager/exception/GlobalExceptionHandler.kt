@@ -30,6 +30,17 @@ class GlobalExceptionHandler {
         )
         return ResponseEntity(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR)
     }
+
+    @ExceptionHandler(SpotAlreadyOccupiedException::class)
+    fun handleSpotAlreadyOccupiedException(ex: SpotAlreadyOccupiedException): ResponseEntity<ErrorResponse> {
+        val errorResponse = ErrorResponse(
+            timestamp = LocalDateTime.now(),
+            status = HttpStatus.BAD_REQUEST.value(),
+            error = "Bad Request",
+            message = ex.message ?: "Spot is already occupied",
+        )
+        return ResponseEntity(errorResponse, HttpStatus.BAD_REQUEST)
+    }
 }
 
 data class ErrorResponse(
