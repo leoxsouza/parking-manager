@@ -5,4 +5,6 @@ import org.springframework.data.repository.kotlin.CoroutineCrudRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface SectorRepository : CoroutineCrudRepository<Sector, String>
+interface SectorRepository : CoroutineCrudRepository<Sector, String> {
+    suspend fun findByName(name: String): Sector?
+}

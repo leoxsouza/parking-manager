@@ -5,4 +5,6 @@ import org.springframework.data.repository.kotlin.CoroutineCrudRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface SpotRepository : CoroutineCrudRepository<Spot, Long>
+interface SpotRepository : CoroutineCrudRepository<Spot, Long> {
+    suspend fun findSpotByLatAndLng(lat: Double, lng: Double): MutableList<Spot>
+}

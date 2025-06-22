@@ -1,7 +1,7 @@
 -- Drop tables if they exist (optional, you can remove these if you want to keep existing data)
+DROP TABLE IF EXISTS parking_session;
 DROP TABLE IF EXISTS spot;
 DROP TABLE IF EXISTS sector;
-DROP TABLE IF EXISTS parking_session;
 DROP TABLE IF EXISTS revenue;
 
 -- Create sector table
@@ -31,9 +31,9 @@ CREATE TABLE IF NOT EXISTS parking_session (
     entry_time TIMESTAMP,
     parked_time TIMESTAMP,
     exit_time TIMESTAMP,
-    spot_lat DOUBLE PRECISION,
-    spot_lng DOUBLE PRECISION,
-    price DOUBLE PRECISION
+    price DOUBLE PRECISION,
+    spot_id BIGINT,
+    CONSTRAINT fk_spot FOREIGN KEY (spot_id) REFERENCES spot(id)
 );
 
 -- Create revenue table

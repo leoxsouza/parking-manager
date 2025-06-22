@@ -19,6 +19,8 @@ class EntryEventStrategy(
             entryTime = event.entryTime
         )
 
+        // TODO: Implement validations
+
         parkingSessionRepository.save(session)
     }
 }
