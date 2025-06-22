@@ -27,6 +27,7 @@ class GarageMapper {
             lat = dto.lat,
             lng = dto.lng,
             sectorName = sector.name,
+            occupied = dto.occupied
         )
     }
 

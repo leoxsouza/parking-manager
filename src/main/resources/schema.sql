@@ -21,6 +21,7 @@ CREATE TABLE IF NOT EXISTS spot (
     lat DOUBLE PRECISION NOT NULL,
     lng DOUBLE PRECISION NOT NULL,
     sector_name VARCHAR(255) NOT NULL,
+    occupied BOOLEAN NOT NULL,
     FOREIGN KEY (sector_name) REFERENCES sector(name)
 );
 

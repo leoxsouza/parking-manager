@@ -11,5 +11,6 @@ data class Spot(
     val lat: Double,
     val lng: Double,
     @Column("sector_name")
-    val sectorName: String
+    val sectorName: String,
+    val occupied: Boolean
 )

@@ -9,6 +9,7 @@ import com.leonardo.parkingmanager.repository.ParkingSessionRepository
 import com.leonardo.parkingmanager.repository.SectorRepository
 import com.leonardo.parkingmanager.repository.SpotRepository
 import com.leonardo.parkingmanager.service.PricingService
+import com.leonardo.parkingmanager.service.SpotService
 import com.leonardo.parkingmanager.service.WebhookEventStrategy
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
@@ -22,9 +23,9 @@ import java.time.Instant
 @Component
 class ParkedEventStrategy(
     private val parkingSessionRepository: ParkingSessionRepository,
-    private val spotRepository: SpotRepository,
     private val sectorRepository: SectorRepository,
-    private val pricingService: PricingService
+    private val pricingService: PricingService,
+    private val spotService: SpotService
 ) : WebhookEventStrategy {
     override val eventType = EventType.PARKED
     private val logger = LoggerFactory.getLogger(ParkedEventStrategy::class.java)
@@ -41,7 +42,7 @@ class ParkedEventStrategy(
         
         validateEventData(event)
         
-        val spot = findSpot(event.latitude!!, event.longitude!!)
+        val spot = spotService.findSpot(event.latitude!!, event.longitude!!)
         val sector = findSector(spot.sectorName)
         val session = findParkingSession(event.licensePlate)
         
@@ -65,17 +66,7 @@ class ParkedEventStrategy(
         }
     }
     
-    /**
-     * Finds a spot based on latitude and longitude
-     */
-    private suspend fun findSpot(latitude: Double, longitude: Double): Spot {
-        return spotRepository.findSpotByLatAndLng(latitude, longitude)
-            .firstOrNull() ?: run {
-                logger.error("No spot found near coordinates: $latitude, $longitude")
-                throw IllegalStateException("No spot found near coordinates: $latitude, $longitude")
-            }
-    }
-    
+
     /**
      * Finds a sector by name
      */

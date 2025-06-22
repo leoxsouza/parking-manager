@@ -37,4 +37,14 @@ interface ParkingSessionRepository : CoroutineCrudRepository<ParkingSession, Lon
     suspend fun findStatusByLicensePlate(
         licensePlate: String
     ): PlateStatusResponseDto?
+
+
+    @Query("""
+        SELECT * FROM parking_session ps
+        JOIN spot s ON ps.spot_id = s.id
+        WHERE s.lat = :lat AND s.lng = :lng
+          AND ps.exit_time IS NULL
+        LIMIT 1
+    """)
+    suspend fun findActiveByLatAndLng(lat: Double, lng: Double): ParkingSession?
 }

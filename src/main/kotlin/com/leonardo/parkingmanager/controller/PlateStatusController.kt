@@ -17,7 +17,6 @@ class PlateStatusController(
 
     @PostMapping
     suspend fun getPlateStatus(@RequestBody licensePlate: LicensePlateDto): ResponseEntity<PlateStatusResponseDto> {
-        val plateStatus = plateStatusService.getPlateStatus(licensePlate)
-        return ResponseEntity.ok(plateStatus)
+        return ResponseEntity.ok(plateStatusService.getPlateStatus(licensePlate))
     }
 }
