@@ -19,4 +19,23 @@ class PricingService {
             else             -> basePrice * 1.25
         }
     }
+
+    /**
+     * Calculates the final price based on the dynamic price, duration, and duration limit
+     *
+     * @param dynamicPrice The dynamic price for the sector
+     * @param durationMinutes The duration in minutes
+     * @param durationLimit The duration limit in minutes
+     * @return The calculated final price
+     */
+    fun calculateFinalPrice(dynamicPrice: Double, durationMinutes: Long, durationLimit: Int): Double {
+        if (durationMinutes <= durationLimit) {
+            return dynamicPrice
+        }
+
+        val factor = durationMinutes.toDouble() / durationLimit.toDouble()
+        val extraCharge = factor * dynamicPrice
+
+        return dynamicPrice + extraCharge
+    }
 }

@@ -17,5 +17,5 @@ interface ParkingSessionRepository : CoroutineCrudRepository<ParkingSession, Lon
     """)
     suspend fun countActiveSessionsBySector(sectorName: String): Long
 
-    suspend fun findByLicensePlate(licensePlate: String): MutableList<ParkingSession>
+    suspend fun findByLicensePlateAndExitTimeIsNull(licensePlate: String): MutableList<ParkingSession>
 }

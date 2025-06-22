@@ -90,7 +90,7 @@ class ParkedEventStrategy(
      * Finds an active parking session by license plate
      */
     private suspend fun findParkingSession(licensePlate: String): ParkingSession {
-        return parkingSessionRepository.findByLicensePlate(licensePlate).firstOrNull() ?: run {
+        return parkingSessionRepository.findByLicensePlateAndExitTimeIsNull(licensePlate).firstOrNull() ?: run {
             logger.error("No active parking session found for license plate $licensePlate")
             throw IllegalStateException("No active parking session found for license plate $licensePlate")
         }
@@ -102,6 +102,12 @@ class ParkedEventStrategy(
     private suspend fun calculateSectorOccupancy(sector: Sector, sectorName: String): Double {
         val activeSessionsCount = parkingSessionRepository.countActiveSessionsBySector(sectorName)
         logger.debug("Sector $sectorName occupancy: $activeSessionsCount/${sector.maxCapacity}")
+
+        if (activeSessionsCount >= sector.maxCapacity || sector.maxCapacity <= 0) {
+            logger.error("Sector $sectorName is full")
+            throw IllegalStateException("Sector $sectorName is full")
+        }
+
         return activeSessionsCount.toDouble() / sector.maxCapacity
     }
     
