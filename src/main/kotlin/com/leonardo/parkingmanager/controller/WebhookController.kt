@@ -19,12 +19,7 @@ class WebhookController(
     @PostMapping
     suspend fun handleEvent(@RequestBody webhookDto: WebhookDto): ResponseEntity<String> {
         logger.info("Handling webhook event: $webhookDto")
-        try {
-            webhookService.handleEvent(webhookDto)
-            return ResponseEntity.ok("Webhook processed successfully")
-        } catch (e: Exception) {
-            logger.error("Error processing webhook request", e)
-            return ResponseEntity.badRequest().body("Error processing webhook request")
-        }
+        webhookService.handleEvent(webhookDto)
+        return ResponseEntity.ok("Webhook processed successfully")
     }
 }

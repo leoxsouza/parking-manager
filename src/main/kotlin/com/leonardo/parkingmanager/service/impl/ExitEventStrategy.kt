@@ -54,6 +54,7 @@ class ExitEventStrategy(
         val finalPrice = pricingService.calculateFinalPrice(dynamicPrice, durationMinutes, sector.durationLimitMinutes)
         
         updateParkingSession(session, exitTime, finalPrice)
+        freeSpot(spotId)
     }
     
     /**
@@ -109,5 +110,15 @@ class ExitEventStrategy(
         logger.info("Completing parking session: id=${session.id}, licensePlate=${session.licensePlate}, " +
                    "duration=${calculateDurationInMinutes(session.parkedTime!!, exitTime)} minutes, price=$finalPrice")
         parkingSessionRepository.save(session)
+    }
+
+    /**
+     * Frees up a spot by setting its occupied flag to false.
+     *
+     * @param spotId The ID of the spot to free up
+     */
+    private suspend fun freeSpot(spotId: Long) {
+        logger.info("Freeing up spot: $spotId")
+        spotRepository.freeUpSpot(spotId)
     }
 }
